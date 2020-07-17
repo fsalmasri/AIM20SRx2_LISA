@@ -6,34 +6,6 @@ from PIL import Image
 from torchvision.transforms import ToTensor
 import torch.utils.data as data
 
-# def makeTails(npimLR, k= 400):
-#     s = k //2
-#     imglst = []
-#     for i in range(0, npimLR.shape[0]-(k-s), s):
-#         for j in range(0, npimLR.shape[1]-(k-s), s):
-#             imglst.append(npimLR[i:i+k,j:j+k,:])
-#     return imglst
-#
-#
-# def reconstructImg(imglstHR, row, cln, k=400):
-#     test = np.zeros((row * 2, cln * 2, 3))
-#     c = 0
-#     for i in range(0, test.shape[0] - k, k):
-#         for j in range(0, test.shape[1] - k, k):
-#             if i == 0:
-#                 if j == 0:
-#                     test[i:i + k * 2, j:j + k * 2] = imglstHR[c]
-#                 if test[i:i + k * 2, j + k // 2:j + k * 2].shape == imglstHR[c][:, k // 2:].shape:
-#                     test[i:i + k * 2, j + k // 2:j + k * 2] = imglstHR[c][:, k // 2:]
-#             else:
-#                 if j == 0:
-#                     test[i:i + k * 2, j:j + k * 2] = imglstHR[c]
-#                 if test[i + k // 2:i + k * 2, j + k // 2:j + k * 2].shape == imglstHR[c][k // 2:, k // 2:].shape:
-#                     test[i + k // 2:i + k * 2, j + k // 2:j + k * 2] = imglstHR[c][k // 2:, k // 2:]
-#             c = c + 1
-#
-#     return test
-
 def make_tiles(img, tile_dim, overlap_dim):
     h, w, _ = img.shape
     o = []
@@ -101,7 +73,6 @@ def merge_tiles(tiles, overlap_dim, out_shape):
 
         o[lim_y_inf:lim_y_sup, lim_x_inf:lim_x_sup, :] = tile[lim_y_inf - p_y:lim_y_sup - p_y,
                                                          lim_x_inf - p_x:lim_x_sup - p_x, :]
-        # o[p_y:p_y + d,p_x:p_x+d,:] = tile # For complete update.
 
         if change_x:
             p_x = 0
@@ -114,15 +85,15 @@ def merge_tiles(tiles, overlap_dim, out_shape):
 
 
 class AIM20(data.Dataset):
-    def __init__(self, imgDir):
-        self.img_dir = imgDir
-        self.fileList = os.listdir(imgDir)
+    def __init__(self, img_dir):
+        self.img_dir = img_dir
+        self.file_list = os.listdir(img_dir)
 
     def __getitem__(self, idx):
-        name = self.fileList[idx]
-        nameIn = os.path.join(self.img_dir, name)
-        imgIn = Image.open(nameIn)
-        return ToTensor()(imgIn), self.fileList[idx]
+        name = self.file_list[idx]
+        name_in = os.path.join(self.img_dir, name)
+        img_in = Image.open(name_in)
+        return ToTensor()(img_in), self.file_list[idx]
 
     def __len__(self):
-        return len(self.fileList)
+        return len(self.file_list)

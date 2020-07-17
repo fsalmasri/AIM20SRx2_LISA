@@ -28,8 +28,8 @@ model = Cyclic().to(device)
 cp = torch.load(model_dir)
 model.load_state_dict(cp)
 
-imgDir = opt.dataset #'/home/falmasri/Desktop/Datasets/AIM2020/RISRC(x2)/TestLR'
-test_loader = AIM20(imgDir)
+img_dir = opt.dataset #'/home/falmasri/Desktop/Datasets/AIM2020/RISRC(x2)/TestLR'
+test_loader = AIM20(img_dir)
 
 
 model.eval()

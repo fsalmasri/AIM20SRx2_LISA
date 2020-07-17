@@ -8,6 +8,7 @@ class Cyclic(nn.Module):
         nChannel = 3
         nFeat2 = 48
         nFeat = 64
+        
         self.loops = 10
 
         self.anal0 = Analysis(nChannel, nFeat, k= 3, str = 1)
