@@ -28,7 +28,7 @@ model = Cyclic().to(device)
 cp = torch.load(model_dir)
 model.load_state_dict(cp)
 
-img_dir = opt.dataset #'/home/falmasri/Desktop/Datasets/AIM2020/RISRC(x2)/TestLR'
+img_dir = opt.dataset 
 test_loader = AIM20(img_dir)
 
 if not os.path.exists('imgs'):
@@ -47,11 +47,10 @@ for im_lr, fname in test_bar:
         with torch.no_grad():
             output0 = model(f)
             restoredSRlst.append(output0[0].permute(1, 2, 0).data.cpu().numpy())
-            print(output0.max(),output0.min())
+
     img = merge_tiles(restoredSRlst, overlap_dim * 2, (im_lr.shape[2] * 2, im_lr.shape[3] * 2, im_lr.shape[1]))
 
     mainSR = np.clip(img * 255, 0, 255).round().astype(np.uint8)
     im = Image.fromarray(mainSR)
-    print(fname)
     im.save(join('imgs', fname), "PNG", optimize=False, compress_level=0)
 
