@@ -31,27 +31,27 @@ model.load_state_dict(cp)
 img_dir = opt.dataset #'/home/falmasri/Desktop/Datasets/AIM2020/RISRC(x2)/TestLR'
 test_loader = AIM20(img_dir)
 
+if not os.path.exists('imgs'):
+    os.mkdir('imgs')
 
 model.eval()
 test_bar = tqdm(test_loader)
 for im_lr, fname in test_bar:
     batch_size = im_lr.size(0)
 
-
     imgslst = make_tiles(im_lr[0].permute(1,2,0).data.numpy(), tile_dim, overlap_dim)
 
     restoredSRlst = []
     for f in imgslst:
         f = torch.FloatTensor(f).unsqueeze(0).permute(0,3,1,2).to(device)
-        f = ((f * 2) - 1)
         with torch.no_grad():
-            output0, _ = model(f)
-            sr = (output0[0] + 1) / 2
-            restoredSRlst.append(sr.permute(1, 2, 0).data.cpu().numpy())
-
+            output0 = model(f)
+            restoredSRlst.append(output0[0].permute(1, 2, 0).data.cpu().numpy())
+            print(output0.max(),output0.min())
     img = merge_tiles(restoredSRlst, overlap_dim * 2, (im_lr.shape[2] * 2, im_lr.shape[3] * 2, im_lr.shape[1]))
 
     mainSR = np.clip(img * 255, 0, 255).round().astype(np.uint8)
     im = Image.fromarray(mainSR)
-    im.save(join('imgs', fname[0]), "PNG", optimize=False, compress_level=0)
+    print(fname)
+    im.save(join('imgs', fname), "PNG", optimize=False, compress_level=0)
 

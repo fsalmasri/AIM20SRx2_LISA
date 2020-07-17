@@ -93,7 +93,7 @@ class AIM20(data.Dataset):
         name = self.file_list[idx]
         name_in = os.path.join(self.img_dir, name)
         img_in = Image.open(name_in)
-        return ToTensor()(img_in), self.file_list[idx]
+        return ToTensor()(img_in).unsqueeze(0), self.file_list[idx]
 
     def __len__(self):
         return len(self.file_list)
